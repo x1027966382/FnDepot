@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FNNet Monitor</title>
+    <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-left">
+            <span class="logo">📡</span>
+            <h1>FNNet Monitor</h1>
+        </div>
+        <div class="header-right">
+            <span id="hostname" class="tag">—</span>
+            <span id="uptime" class="tag">—</span>
+            <span id="kernel" class="tag">—</span>
+            <span class="status-dot" id="statusDot"></span>
+            <span id="lastUpdate" class="muted">连接中...</span>
+        </div>
+    </header>
+
+    <!-- Dashboard Grid -->
+    <main class="grid">
+        <!-- CPU -->
+        <section class="card" id="cpuCard">
+            <h2>⚡ CPU</h2>
+            <div class="card-body">
+                <div class="cpu-top">
+                    <div class="gauge-wrap">
+                        <canvas id="cpuGauge" width="120" height="120"></canvas>
+                        <span id="cpuPercent" class="gauge-text">0%</span>
+                    </div>
+                    <div class="cpu-info">
+                        <div id="cpuModel" class="info-line">—</div>
+                        <div class="info-row"><span>核心</span><span id="cpuCores">—</span></div>
+                        <div class="info-row"><span>负载</span><span id="cpuLoad">—</span></div>
+                    </div>
+                </div>
+                <div id="cpuTemp" class="cpu-temp"></div>
+                <div id="cpuPerCore" class="cpu-cores"></div>
+            </div>
+        </section>
+
+        <!-- Memory -->
+        <section class="card" id="memCard">
+            <h2>🧠 内存</h2>
+            <div class="card-body">
+                <div class="gauge-wrap">
+                    <canvas id="memGauge" width="120" height="120"></canvas>
+                    <span id="memPercent" class="gauge-text">0%</span>
+                </div>
+                <div class="mem-bars">
+                    <div class="info-row"><span>总计</span><span id="memTotal">—</span></div>
+                    <div class="info-row"><span>已用</span><span id="memUsed">—</span></div>
+                    <div class="info-row"><span>可用</span><span id="memAvail">—</span></div>
+                    <div class="info-row"><span>缓存</span><span id="memCached">—</span></div>
+                    <div class="info-row"><span>Swap</span><span id="memSwap">—</span></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Network -->
+        <section class="card card-wide" id="netCard">
+            <h2>🌐 网络</h2>
+            <div class="card-body">
+                <div class="net-speed">
+                    <div class="speed-item">
+                        <span class="speed-label">↑ 上传</span>
+                        <span class="speed-val" id="netUp">0 B/s</span>
+                    </div>
+                    <div class="speed-item">
+                        <span class="speed-label">↓ 下载</span>
+                        <span class="speed-val" id="netDown">0 B/s</span>
+                    </div>
+                    <div class="speed-item">
+                        <span class="speed-label">总发送</span>
+                        <span class="speed-val" id="netTotalSent">—</span>
+                    </div>
+                    <div class="speed-item">
+                        <span class="speed-label">总接收</span>
+                        <span class="speed-val" id="netTotalRecv">—</span>
+                    </div>
+                </div>
+                <canvas id="netChart" class="chart"></canvas>
+                <div id="netInterfaces" class="net-iface"></div>
+            </div>
+        </section>
+
+        <!-- Disk -->
+        <section class="card" id="diskCard">
+            <h2>💾 磁盘</h2>
+            <div class="card-body">
+                <div id="diskPhysical" class="disk-list"></div>
+                <div id="diskPartitions" class="disk-partitions"></div>
+            </div>
+        </section>
+
+        <!-- Process -->
+        <section class="card" id="procCard">
+            <h2>🔝 进程</h2>
+            <div class="card-body">
+                <table class="proc-table">
+                    <thead>
+                        <tr><th>PID</th><th>名称</th><th>用户</th><th>CPU%</th><th>MEM%</th><th>启动时间</th></tr>
+                    </thead>
+                    <tbody id="procList"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer">
+        <span>FNNet Monitor v1.0</span>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

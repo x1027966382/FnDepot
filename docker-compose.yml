@@ -1,0 +1,13 @@
+services:
+  fnnet-monitor:
+    build: .
+    container_name: fnnet-monitor
+    restart: unless-stopped
+    ports:
+      - "5000:5000"
+    privileged: true
+    volumes:
+      - /proc:/proc:ro
+      - /sys:/sys:ro
+    environment:
+      - TZ=Asia/Shanghai
