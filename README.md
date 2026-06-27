@@ -1,80 +1,67 @@
 # FNNet Monitor
 
-轻量级 NAS 系统监控 Web 工具，一条 Docker 命令即可拥有专业级可视化监控面板。
+轻量级飞牛NAS系统监控Web工具，**原生应用**，无需Docker部署。
 
-## ✨ 功能特性
+## 功能特性
 
-- ⚡ **CPU 监控** — 使用率、核心频率、温度、负载、Turbo Boost 状态、逐核可视化
-- 🧠 **内存监控** — RAM / Swap 使用量、缓存、实时更新
-- 🌐 **网络监控** — 实时上传/下载速度、流量统计、60 秒趋势图、各网卡状态
-- 💾 **磁盘监控** — 物理硬盘信息、SMART 健康检测、分区使用率、I/O 统计
-- 🔝 **进程排行** — TOP 20 进程，CPU/内存占用颜色标记，异常进程一目了然
-- 📡 **SSE 实时推送** — 无需刷新，数据每 2 秒自动更新
+- **CPU监控**: 核心频率、温度、负载、Turbo Boost、逐核可视化
+- **内存监控**: RAM/Swap使用量、缓存、实时更新
+- **网络监控**: 实时网速、流量统计、60秒趋势图、网卡状态
+- **磁盘监控**: 物理硬盘信息、SMART健康检测、分区使用率、I/O统计
+- **进程排行**: TOP 20进程，CPU/内存占用颜色标记
 
-## 📦 快速安装
+## 技术栈
 
-### Docker 运行
+- 后端: Python 3 + Flask + psutil
+- 前端: HTML/CSS/JS + SSE实时推送
+- 运行方式: **原生应用**，直接在宿主机运行
+
+## 飞牛安装方式
+
+### 方式一：应用中心安装（推荐）
+
+1. 下载最新 `.fpk` 安装包
+2. 打开飞牛NAS → 应用中心 → 手动安装
+3. 选择 `.fpk` 文件上传安装
+4. 安装完成后在桌面点击图标即可使用
+
+### 方式二：fnpack打包
 
 ```bash
-docker run -d --name fnnet-monitor -p 5000:5000 --privileged \
-  --pid=host -v /sys:/sys:ro \
-  ghcr.io/x1027966382/fnnet-monitor:latest
+# 安装fnpack工具
+# 进入项目目录执行打包
+fnpack build
+
+# 生成的 .fpk 文件可直接在飞牛应用中心安装
 ```
 
-### Docker Compose
-
-```bash
-git clone https://github.com/x1027966382/fnnet-monitor.git
-cd fnnet-monitor
-docker compose up -d
-```
-
-启动后浏览器访问 `http://<你的NAS-IP>:5000` 即可打开监控面板。
-
-## ⚠️ 注意事项
-
-- 容器需要 **privileged** 权限和 **pid: host** 才能读取宿主机数据
-- 不要挂载 `/proc`，在 fnOS 6.18 内核上会触发 apparmor 冲突
-- 推荐通过 [FnDepot](https://github.com/x1027966382/FnDepot) 应用商店安装 FPK 版本
-
-## 🛠️ 技术栈
-
-| 组件 | 技术 |
-|------|------|
-| 后端 | Flask (Python) |
-| 数据采集 | psutil、smartctl、/proc 文件系统 |
-| 前端 | 纯 HTML / CSS / JavaScript |
-| 实时通信 | Server-Sent Events (SSE) |
-| 部署 | Docker |
-
-## 📂 项目结构
+## 原生应用目录结构
 
 ```
 fnnet-monitor/
-├── app.py                  # Flask 后端
-├── requirements.txt        # Python 依赖
-├── Dockerfile              # Docker 镜像构建
-├── docker-compose.yml      # Docker Compose 配置
-├── templates/
-│   └── index.html          # 监控面板页面
-└── static/
-    ├── css/style.css       # 暗色主题样式
-    └── js/app.js           # 前端实时渲染逻辑
+├── manifest              # 应用元信息
+├── config/
+│   ├── privilege         # 权限配置（root模式）
+│   └── resource          # 资源类型（app）
+├── cmd/
+│   └── main              # 生命周期脚本
+├── app/
+│   ├── app.py            # Flask后端
+│   ├── requirements.txt  # Python依赖
+│   ├── ui/               # 桌面入口配置
+│   ├── templates/        # HTML模板
+│   └── static/           # CSS/JS资源
+├── ICON.PNG              # 64x64 图标
+├── ICON_256.PNG          # 256x256 图标
+├── fnpack.json           # FnDepot元数据索引
+└── README.md
 ```
 
-## 📝 API 接口
+## 端口
 
-| 路径 | 说明 |
-|------|------|
-| `GET /` | 监控面板页面 |
-| `GET /api/data` | 一次性返回全部监控数据（JSON） |
-| `GET /api/stream` | SSE 实时数据流（每 2 秒推送） |
-| `GET /api/cpu` | CPU 信息 |
-| `GET /api/memory` | 内存信息 |
-| `GET /api/network` | 网络信息 |
-| `GET /api/disk` | 磁盘信息 |
-| `GET /api/processes` | 进程列表 |
+- 默认端口: 5000
+- Web界面: http://localhost:5000
 
-## 📄 License
+## 许可证
 
 MIT

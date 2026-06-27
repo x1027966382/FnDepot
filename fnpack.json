@@ -1,0 +1,20 @@
+{
+  "fnnet-monitor": {
+    "display_name": "FNNet Monitor",
+    "platform": [
+      "x86",
+      "arm"
+    ],
+    "version": "1.2.0",
+    "desc": "轻量级飞牛NAS系统监控Web工具，提供CPU、内存、网络、磁盘、进程实时监控，支持SSE实时推送、Canvas仪表盘、网络趋势图、SMART健康检测等功能。",
+    "labels": "监控,NAS,系统,CPU,内存,网络,磁盘,进程",
+    "author": "chinaxiao",
+    "author_url": "https://github.com/x1027966382",
+    "bug_report_url": "https://github.com/x1027966382/FnDepot/issues",
+    "isdocker": "0",
+    "install_type": "root",
+    "size": "15",
+    "download_url": "",
+    "changelog": "v1.2.0 完全重写为飞牛原生应用，无需Docker部署，直接在宿主机运行"
+  }
+}
