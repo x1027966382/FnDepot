@@ -6,8 +6,8 @@ services:
     ports:
       - "5000:5000"
     privileged: true
+    pid: host
     volumes:
-      - /proc:/proc:ro
       - /sys:/sys:ro
     environment:
       - TZ=Asia/Shanghai

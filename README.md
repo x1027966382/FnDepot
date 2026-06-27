@@ -17,7 +17,7 @@
 
 ```bash
 docker run -d --name fnnet-monitor -p 5000:5000 --privileged \
-  -v /proc:/proc:ro -v /sys:/sys:ro \
+  --pid=host -v /sys:/sys:ro \
   ghcr.io/x1027966382/fnnet-monitor:latest
 ```
 
@@ -30,6 +30,12 @@ docker compose up -d
 ```
 
 启动后浏览器访问 `http://<你的NAS-IP>:5000` 即可打开监控面板。
+
+## ⚠️ 注意事项
+
+- 容器需要 **privileged** 权限和 **pid: host** 才能读取宿主机数据
+- 不要挂载 `/proc`，在 fnOS 6.18 内核上会触发 apparmor 冲突
+- 推荐通过 [FnDepot](https://github.com/x1027966382/FnDepot) 应用商店安装 FPK 版本
 
 ## 🛠️ 技术栈
 
@@ -55,33 +61,6 @@ fnnet-monitor/
     ├── css/style.css       # 暗色主题样式
     └── js/app.js           # 前端实时渲染逻辑
 ```
-
-## 🖥️ 面板预览
-
-### CPU 面板
-- 圆环仪表盘显示总使用率
-- CPU 型号、核心数、负载均值
-- 温度传感器实时读数
-- 逐核色块可视化（绿色 → 黄色 → 橙色 → 红色）
-
-### 内存面板
-- 圆环仪表盘 + 详细数据行
-- RAM / Swap 使用量一目了然
-
-### 网络面板
-- 实时上传/下载速度
-- 总流量统计
-- 60 秒流量趋势图（双色折线）
-- 各网卡独立速度显示
-
-### 磁盘面板
-- 物理硬盘型号、类型（HDD/SSD/NVMe）、容量
-- SMART 健康状态
-- 分区使用率进度条（颜色随占用变化）
-
-### 进程面板
-- TOP 20 进程表格
-- CPU% 颜色标记（红 > 50% / 橙 > 20% / 黄 > 5%）
 
 ## 📝 API 接口
 
