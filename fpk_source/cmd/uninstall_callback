@@ -1,0 +1,18 @@
+#!/bin/bash
+
+### This script is called after the user uninstalls the application.
+set -e
+source "/var/apps/${TRIM_APPNAME}/cmd/common"
+
+log_msg "uninstall_callback executing..."
+
+# 根据用户选择决定是否删除数据
+if [ "${wizard_data_action}" = "delete" ]; then
+    log_msg "User chose to delete all data"
+    rm -rf "${TRIM_PKGVAR}" >> ${LOG_FILE} 2>&1
+    log_msg "Data directory removed: ${TRIM_PKGVAR}"
+else
+    log_msg "User chose to keep data"
+fi
+
+exit 0

@@ -1,0 +1,22 @@
+#!/bin/bash
+
+### This script is called after the user upgrades the application.
+set -e
+source "/var/apps/${TRIM_APPNAME}/cmd/common"
+
+WORK_DIR="${TRIM_APPDEST}"
+
+log_msg "upgrade_callback executing..."
+
+# 解压新的 app.tgz
+if [ -f "${WORK_DIR}/app.tgz" ]; then
+    log_msg "Extracting new app.tgz..."
+    tar -xzf "${WORK_DIR}/app.tgz" -C "${WORK_DIR}" >> ${LOG_FILE} 2>&1 || alarm_and_exit "Failed to extract app.tgz"
+    log_msg "app.tgz extracted successfully"
+fi
+
+# 更新依赖
+log_msg "Updating dependencies..."
+"${WORK_DIR}/.venv/bin/pip" install -r "${WORK_DIR}/requirements.txt" >> ${LOG_FILE} 2>&1 || alarm_and_exit "Failed to update dependencies"
+
+exit 0

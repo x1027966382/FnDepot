@@ -1,0 +1,25 @@
+#!/bin/bash
+
+### This script is called after the user change environment variables in application setting page.
+set -e
+source "/var/apps/${TRIM_APPNAME}/cmd/common"
+
+log_msg "config_callback executing, updating config..."
+
+# 更新配置文件
+cat > "${CFG_FILE}" << EOF
+{
+    "port": ${app_port:-8180},
+    "host": "0.0.0.0"
+}
+EOF
+
+log_msg "Config updated: port=${app_port:-8180}"
+
+# 重启服务
+/var/apps/${TRIM_APPNAME}/cmd/main stop >> ${LOG_FILE} 2>&1
+sleep 1
+/var/apps/${TRIM_APPNAME}/cmd/main start >> ${LOG_FILE} 2>&1
+
+log_msg "Service restarted with new configuration"
+exit 0

@@ -1,0 +1,14 @@
+appname               = fnos-network-monitor
+version               = 1.0.0
+display_name          = Network Monitor
+desc                  = 类似 RustNet 的实时网络连接监控工具，提供进程网络使用追踪、连接状态监控、深度包检测等功能
+platform              = x86
+source                = thirdparty
+maintainer            = x1027966382
+maintainer_url        = https://github.com/x1027966382/fnos-network-monitor
+distributor           = x1027966382
+distributor_url       = https://github.com/x1027966382/fnos-network-monitor
+desktop_uidir         = ui
+desktop_applaunchname = NetworkMonitor.Application
+service_port          = 8180
+checksum              =

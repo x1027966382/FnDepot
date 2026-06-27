@@ -1,0 +1,18 @@
+{
+    "data-share":
+    {
+        "shares":
+        [
+            {
+                "name": "fnos-network-monitor",
+                "permission":
+                {
+                    "rw":
+                    [
+                        "fnos-network-monitor"
+                    ]
+                }
+            }
+        ]
+    }
+}

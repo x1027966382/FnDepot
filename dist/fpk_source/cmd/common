@@ -1,0 +1,45 @@
+#!/bin/bash
+
+LOG_DIR="${TRIM_APPDEST_VOL}/@appshare/${TRIM_APPNAME}/logs"
+LOG_FILE="${LOG_DIR}/cmd.log"
+SCRIPT_PATH="${TRIM_APPDEST}/script"
+CFG_FILE="${TRIM_PKGVAR}/config.json"
+DOWNLOAD_DIR="${TRIM_PKGVAR}"
+
+log_msg() {
+    if [ ! -d "${LOG_DIR}" ]; then
+        mkdir -p "${LOG_DIR}"
+    fi
+    echo "$(date '+%Y-%m-%d %H:%M:%S') - $1" >> ${LOG_FILE}
+}
+
+alarm_and_exit() {
+    log_msg "$1"
+    echo "$1" > "${TRIM_TEMP_LOGFILE}"
+    exit 1
+}
+
+check_port_in_use() {
+    local port=$1
+    local exclude_process=$2
+    if command -v ss >/dev/null 2>&1; then
+        if [ -n "$exclude_process" ]; then
+            ss -tlnp | grep -q ":$port " | grep -v "$exclude_process"
+        else
+            ss -tln | grep -q ":$port "
+        fi
+    elif command -v netstat >/dev/null 2>&1; then
+        if [ -n "$exclude_process" ]; then
+            netstat -tlnp 2>/dev/null | grep -q ":$port " | grep -v "$exclude_process"
+        else
+            netstat -tln 2>/dev/null | grep -q ":$port "
+        fi
+    fi
+}
+
+str_trim() {
+    local str="$1"
+    str="${str#"${str%%[![:space:]]*}"}"
+    str="${str%"${str##*[![:space:]]}"}"
+    echo "$str"
+}

@@ -1,0 +1,41 @@
+#!/bin/bash
+
+### This script is called after the user installs the application.
+set -e
+source "/var/apps/${TRIM_APPNAME}/cmd/common"
+
+WORK_DIR="${TRIM_APPDEST}"
+
+log_msg "install_callback executing..."
+
+# 解压 app.tgz 到应用目录
+if [ -f "${WORK_DIR}/app.tgz" ]; then
+    log_msg "Extracting app.tgz..."
+    tar -xzf "${WORK_DIR}/app.tgz" -C "${WORK_DIR}" >> ${LOG_FILE} 2>&1 || alarm_and_exit "Failed to extract app.tgz"
+    log_msg "app.tgz extracted successfully"
+else
+    alarm_and_exit "app.tgz not found at ${WORK_DIR}/app.tgz"
+fi
+
+# 创建虚拟环境并安装依赖
+log_msg "Creating virtual environment..."
+python3 -m venv "${WORK_DIR}/.venv" >> ${LOG_FILE} 2>&1 || alarm_and_exit "Failed to create virtual environment"
+
+log_msg "Installing Python dependencies..."
+"${WORK_DIR}/.venv/bin/pip" install -r "${WORK_DIR}/requirements.txt" >> ${LOG_FILE} 2>&1 || alarm_and_exit "Failed to install dependencies"
+
+# 创建配置目录
+mkdir -p "${TRIM_PKGVAR}" >> ${LOG_FILE} 2>&1
+mkdir -p "${LOG_DIR}" >> ${LOG_FILE} 2>&1
+
+# 生成配置文件
+cat > "${CFG_FILE}" << EOF
+{
+    "port": ${app_port:-8180},
+    "host": "0.0.0.0"
+}
+EOF
+log_msg "Config file created at ${CFG_FILE}"
+
+log_msg "Installation completed successfully"
+exit 0

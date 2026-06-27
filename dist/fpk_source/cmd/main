@@ -1,0 +1,101 @@
+#!/bin/bash
+set -e
+source "/var/apps/${TRIM_APPNAME}/cmd/common"
+
+PID_FILE="${TRIM_PKGVAR}/app.pid"
+WORK_DIR="${TRIM_APPDEST}"
+APP_LOG_FILE="${LOG_DIR}/network-monitor.log"
+
+# 读取配置
+if [ -f "${CFG_FILE}" ]; then
+    PORT=$(grep -o '"port"[[:space:]]*:[[:space:]]*[0-9]*' "${CFG_FILE}" | sed 's/.*:[[:space:]]*//')
+else
+    PORT=8180
+fi
+
+# 启动命令
+CMD="cd ${WORK_DIR} && ${WORK_DIR}/.venv/bin/python3 network_monitor.py --port ${PORT}"
+
+start_process() {
+    if status; then
+        log_msg "Process already running"
+        return 0
+    fi
+
+    log_msg "Starting Network Monitor on port ${PORT}..."
+    
+    # 检查端口占用
+    if check_port_in_use "${PORT}"; then
+        alarm_and_exit "Port ${PORT} is already in use"
+    fi
+
+    # 启动进程
+    bash -c "${CMD}" >> ${APP_LOG_FILE} 2>&1 &
+    PID=$!
+    echo ${PID} > ${PID_FILE}
+    log_msg "Started with PID: ${PID}"
+    return 0
+}
+
+stop_process() {
+    log_msg "Stopping Network Monitor..."
+
+    if [ -r "${PID_FILE}" ]; then
+        PID=$(head -n 1 "${PID_FILE}" | tr -d '[:space:]')
+        log_msg "Stopping PID: ${PID}"
+
+        if kill -0 ${PID} 2>/dev/null; then
+            kill -TERM ${PID} >> ${LOG_FILE} 2>&1
+            sleep 1
+            if kill -0 ${PID} 2>/dev/null; then
+                kill -KILL ${PID} >> ${LOG_FILE} 2>&1
+                log_msg "Force killed PID: ${PID}"
+            fi
+        fi
+        rm -f "${PID_FILE}"
+    fi
+
+    return 0
+}
+
+check_process() {
+    local pid=$1
+    if kill -0 "${pid}" 2>/dev/null; then
+        return 0
+    else
+        return 1
+    fi
+}
+
+status() {
+    if [ -f "${PID_FILE}" ]; then
+        PID=$(head -n 1 "${PID_FILE}" | tr -d '[:space:]')
+        if check_process "${PID}"; then
+            return 0
+        else
+            rm -f "${PID_FILE}"
+        fi
+    fi
+    return 1
+}
+
+case $1 in
+start)
+    start_process
+    ;;
+stop)
+    stop_process
+    ;;
+status)
+    if status; then
+        exit 0
+    else
+        exit 3
+    fi
+    ;;
+*)
+    exit 1
+    ;;
+esac
+
+exit 0
