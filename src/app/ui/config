@@ -1,0 +1,7 @@
+{
+  "name": "FNNet Monitor",
+  "description": "轻量级飞牛NAS系统监控Web工具",
+  "icon": "images/icon.png",
+  "url": "http://localhost:5000",
+  "type": "iframe"
+}

@@ -1,0 +1,3 @@
+﻿flask>=3.0
+psutil>=5.9
+py-cpuinfo>=9.0
